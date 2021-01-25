@@ -7,8 +7,6 @@ convert_to_opus is a simple shell script that converts directories of audio file
 - Support for most known audio file types
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
 ```bash
 curl -LO https://raw.githubusercontent.com/D221/convert_to_opus/master/convert_to_opus.sh
 ```
