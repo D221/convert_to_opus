@@ -22,7 +22,6 @@ class RedirectText(object):  # Redirects console output to wx panel
 class Panel(wx.Panel):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
-        self.SetBackgroundColour("White")
 
         # Displays console log
         self.log = wx.TextCtrl(self, -1, pos=(250, 10), size=(300, 200),
