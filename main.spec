@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['main.py'],
-             pathex=['D:\\git projects\\convert_to_opus_py'],
+             pathex=['D:\\git projects\\convert_to_opus'],
              binaries=[],
              datas=[],
              hiddenimports=[],
