@@ -1,5 +1,5 @@
 # convert_to_opus
-convert_to_opus is a simple shell script that converts directories of audio files to [opus](https://opus-codec.org/).
+convert_to_opus is a Python GUI program that converts directories of audio files to [opus](https://opus-codec.org/).
 
 ## Features
 - Puts original audio files in a subdirectory
@@ -7,17 +7,21 @@ convert_to_opus is a simple shell script that converts directories of audio file
 - Support for most known audio file types
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
-
 ```bash
-curl -LO https://raw.githubusercontent.com/D221/convert_to_opus/master/convert_to_opus.sh
+git clone https://github.com/D221/convert_to_opus
+cd convert_to_opus
+pip install .
 ```
+
 ## Requirements
-- [ffmpeg](https://github.com/FFmpeg/FFmpeg)
+- ffmpeg
+- Python >=3.7
+- wxPython
+
 ## Usage
 ```bash
-./convert_to_opus.sh
+main.py
 ```
-Run the script and follow instructions.
+Select a directory, prefered bitrate and click on convert.
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
