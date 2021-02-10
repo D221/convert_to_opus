@@ -23,19 +23,28 @@ class Panel(wx.Panel):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
 
-        # Displays console log
+        # Console log
         self.log = wx.TextCtrl(self, -1, pos=(250, 10), size=(300, 200),
                                style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL)
         redir = RedirectText(self.log)
         sys.stdout = redir
 
+        # Directory selection
         wx.StaticText(self, pos=(10, 10), label='Select Directory')
         self.select = wx.DirPickerCtrl(self, pos=(10, 30), size=(230, 23))
+
+        # Bitrate selection
         wx.StaticText(self, pos=(10, 60), label='Select Prefered Bitrate')
         self.rate = wx.ComboBox(self, pos=(10, 80), size=(150, 23), choices=[
                                 '24', '32', '64', '96', '128', '192', '256', '320'])
         self.rate.SetValue(text='128')
-        Button = wx.Button(self, pos=(10, 130),
+
+        # Keep original files checkbox
+        self.keepFiles = wx.CheckBox(self, pos=(10, 120),label="Keep Original Files")
+        self.keepFiles.SetValue(True)
+
+        # Convert button
+        Button = wx.Button(self, pos=(10, 150),
                            size=(150, 50), label='CONVERT')
         Button.Bind(wx.EVT_BUTTON, self.threading)
 
@@ -47,12 +56,14 @@ class Panel(wx.Panel):
     def onButton(self, event):
         path = self.select.GetPath()
         bitrate = self.rate.GetValue()
-
+        keep = self.keepFiles.GetValue()
+        
         os.chdir(path)
-        if not os.path.exists('original'):
-            os.makedirs('original')
-        original = os.path.join(path, 'original')
-
+        original = 'NONE'
+        if keep == True:
+            if not os.path.exists('original'):
+                os.makedirs('original')
+            original = os.path.join(path, 'original')
         converter.convert(path, bitrate, original)
         print("\nDone converting")
 

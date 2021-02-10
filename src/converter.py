@@ -13,6 +13,9 @@ def convert(path, bitrate, original):
             without_ext = os.path.splitext(filename)[0]
             subprocess.call('ffmpeg -i "{0}" -loglevel panic -c:a libopus -b:a {1}k -vbr on "{2}.opus"'.format(
                 filename, bitrate, without_ext), shell=True)
-            shutil.move('{0}/{1}'.format(path, filename), original)
+            if original=='NONE':
+                os.remove(filename)
+            else:
+                shutil.move('{0}/{1}'.format(path, filename), original)
         else:
             continue
