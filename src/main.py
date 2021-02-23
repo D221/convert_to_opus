@@ -1,4 +1,6 @@
+from typing import Text
 import wx
+from wx.core import AND, Choice, ID_ANY
 import converter
 import os
 import sys
@@ -29,24 +31,40 @@ class Panel(wx.Panel):
         redir = RedirectText(self.log)
         sys.stdout = redir
 
+        # File or Directory selection box
+        fileFolderChoices = ["Folder", "File"]
+        self.fileFolder = wx.RadioBox(
+            self, label="Folder or File", choices=fileFolderChoices, pos=(10, 10))
+        self.fileFolder.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
+
         # Directory selection
-        wx.StaticText(self, pos=(10, 10), label='Select Directory')
-        self.select = wx.DirPickerCtrl(self, pos=(10, 30), size=(230, 23))
+        wx.StaticText(self, pos=(10, 70), label='Select File/Directory')
+        self.select = wx.DirPickerCtrl(self, pos=(10, 90), size=(230, 23))
 
         # Bitrate selection
-        wx.StaticText(self, pos=(10, 60), label='Select Prefered Bitrate')
-        self.rate = wx.ComboBox(self, pos=(10, 80), size=(150, 23), choices=[
+        wx.StaticText(self, pos=(10, 120), label='Select Prefered Bitrate')
+        self.rate = wx.ComboBox(self, pos=(10, 140), size=(150, 23), choices=[
                                 '24', '32', '64', '96', '128', '192', '256', '320'])
         self.rate.SetValue(text='128')
 
         # Keep original files checkbox
-        self.keepFiles = wx.CheckBox(self, pos=(10, 120),label="Keep Original Files")
+        self.keepFiles = wx.CheckBox(self, pos=(
+            10, 170), label="Keep Original Files")
         self.keepFiles.SetValue(True)
 
         # Convert button
-        Button = wx.Button(self, pos=(10, 150),
+        Button = wx.Button(self, pos=(10, 200),
                            size=(150, 50), label='CONVERT')
         Button.Bind(wx.EVT_BUTTON, self.threading)
+
+    def onRadioBox(self, event):
+        self.selection = self.fileFolder.GetSelection()
+        if self.selection == 0:
+            self.select.Destroy()
+            self.select = wx.DirPickerCtrl(self, pos=(10, 90), size=(230, 23))
+        if self.selection == 1:
+            self.select.Destroy()
+            self.select = wx.FilePickerCtrl(self, pos=(10, 90), size=(230, 23))
 
     def threading(self, event):
         import threading
@@ -55,16 +73,24 @@ class Panel(wx.Panel):
 
     def onButton(self, event):
         path = self.select.GetPath()
+        if self.selection == 1:
+            tempPath = self.select.GetPath()
+            file = tempPath.split('\\')[-1]
+            path = path.rsplit('\\', 1)[0]
         bitrate = self.rate.GetValue()
-        keep = self.keepFiles.GetValue()
-        
+
         os.chdir(path)
-        original = 'NONE'
-        if keep == True:
-            if not os.path.exists('original'):
-                os.makedirs('original')
+
+        if self.keepFiles.GetValue() == 0:  # if not to keep files
+            original = 'NONE'
+        if self.keepFiles.GetValue() == 1:  # if keep files
             original = os.path.join(path, 'original')
-        converter.convert(path, bitrate, original)
+
+        if self.selection == 0:  # if folder
+            converter.convert(path, bitrate, original)
+        if self.selection == 1:  # if file
+            converter.convertfile(file, bitrate, original)
+
         print("\nDone converting")
 
 
