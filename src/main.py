@@ -36,6 +36,7 @@ class Panel(wx.Panel):
         self.fileFolder = wx.RadioBox(
             self, label="Folder or File", choices=fileFolderChoices, pos=(10, 10))
         self.fileFolder.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
+        self.selection = self.fileFolder.GetSelection()
 
         # Directory selection
         wx.StaticText(self, pos=(10, 70), label='Select File/Directory')
@@ -58,7 +59,6 @@ class Panel(wx.Panel):
         Button.Bind(wx.EVT_BUTTON, self.threading)
 
     def onRadioBox(self, event):
-        self.selection = self.fileFolder.GetSelection()
         if self.selection == 0:
             self.select.Destroy()
             self.select = wx.DirPickerCtrl(self, pos=(10, 90), size=(230, 23))
