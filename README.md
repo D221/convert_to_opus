@@ -1,12 +1,15 @@
 # convert_to_opus
-convert_to_opus is a Python GUI program that converts directories of audio files to [opus](https://opus-codec.org/).
+
+convert_to_opus is a Python GUI program for converting audio file directories to [opus](https://opus-codec.org/) audio format.
 
 ## Features
-- Ability to select if you want to keep original files
-- The ability to select the bitrate
-- Support for most known audio file types
+
+- You can choose whether or not you want to preserve the original files
+- The ability to choose the bitrate
+- The majority of commonly used audio file forms are supported
 
 ## Screenshots
+
 ![ScreenShot1](https://raw.github.com/D221/convert_to_opus/master/screenshots/windows.png)
 
 ![ScreenShot2](https://raw.github.com/D221/convert_to_opus/master/screenshots/linux.png)
@@ -20,14 +23,19 @@ pip install .
 ```
 
 ## Requirements
+
 - ffmpeg
 - Python >=3.7
 - wxPython
 
 ## Usage
+
 ```bash
 main.py
 ```
-Select a directory, prefered bitrate and click on convert.
+
+Choose a directory then press CONVERT.
+
 ## License
+
 [MIT](https://choosealicense.com/licenses/mit/)
