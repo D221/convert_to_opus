@@ -1,6 +1,4 @@
-from typing import Text
 import wx
-from wx.core import AND, Choice, ID_ANY
 import converter
 import os
 import sys

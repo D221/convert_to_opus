@@ -4,7 +4,8 @@ import subprocess
 
 
 def convert(path, bitrate, original):
-    commontypes = ('.flac', '.mp3', '.wav', '.m4a', '.aac')
+    commontypes = ('.flac', '.mp3', '.wav', '.m4a',
+                   '.aac', '.webm', '.mp4', '.avi', '.mkv')
     if os.name == 'nt':
         subprocess.CREATE_NO_WINDOW  # no cmd on windows
     if original != 'NONE':
