@@ -3,7 +3,7 @@ import shutil
 import subprocess
 
 
-def convert(path, bitrate, original):
+def convert(path, bitrate, original, container):
     commontypes = ('.flac', '.mp3', '.wav', '.m4a',
                    '.aac', '.webm', '.mp4', '.avi', '.mkv')
     if os.name == 'nt':
@@ -15,8 +15,8 @@ def convert(path, bitrate, original):
         if (filename.endswith(commontypes)):
             print("Converting "+filename)
             without_ext = os.path.splitext(filename)[0]
-            subprocess.call('ffmpeg -i "{0}" -loglevel panic -c:a libopus -b:a {1}k -vbr on "{2}.opus"'.format(
-                filename, bitrate, without_ext), shell=True)
+            subprocess.call('ffmpeg -i "{0}" -vn -loglevel panic -c:a libopus -b:a {1}k -vbr on "{2}.{3}"'.format(
+                filename, bitrate, without_ext, container), shell=True)
             if original == 'NONE':
                 os.remove(filename)
             else:
@@ -25,12 +25,12 @@ def convert(path, bitrate, original):
             continue
 
 
-def convertfile(file, bitrate, original):
+def convertfile(file, bitrate, original, container):
     if os.name == 'nt':
         subprocess.CREATE_NO_WINDOW  # no cmd on windows
     print("Converting "+file)
     without_ext = os.path.splitext(file)[0]
-    subprocess.call('ffmpeg -i "{0}" -loglevel panic -c:a libopus -b:a {1}k -vbr on "{2}.opus"'.format(
-        file, bitrate, without_ext), shell=True)
+    subprocess.call('ffmpeg -i "{0}" -vn -loglevel panic -c:a libopus -b:a {1}k -vbr on "{2}.{3}"'.format(
+        file, bitrate, without_ext, container), shell=True)
     if original == 'NONE':
         os.remove(file)

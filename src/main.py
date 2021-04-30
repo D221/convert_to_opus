@@ -34,7 +34,12 @@ class Panel(wx.Panel):
         self.fileFolder = wx.RadioBox(
             self, label="Folder or File", choices=fileFolderChoices, pos=(10, 10))
         self.fileFolder.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
-        self.selection = self.fileFolder.GetSelection()
+
+        # Audio container selection box
+        fileContainerChoices = [".ogg", ".opus"]
+        self.fileContainer = wx.RadioBox(
+            self, label="Folder or File", choices=fileContainerChoices, pos=(130, 10))
+        self.fileContainer.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
 
         # Directory selection
         wx.StaticText(self, pos=(10, 70), label='Select File/Directory')
@@ -57,11 +62,10 @@ class Panel(wx.Panel):
         Button.Bind(wx.EVT_BUTTON, self.threading)
 
     def onRadioBox(self, event):
-        if self.selection == 0:
-            self.select.Destroy()
+        self.select.Destroy()
+        if self.fileFolder.GetSelection() == 0:
             self.select = wx.DirPickerCtrl(self, pos=(10, 90), size=(230, 23))
-        if self.selection == 1:
-            self.select.Destroy()
+        else:
             self.select = wx.FilePickerCtrl(self, pos=(10, 90), size=(230, 23))
 
     def threading(self, event):
@@ -71,23 +75,29 @@ class Panel(wx.Panel):
 
     def onButton(self, event):
         path = self.select.GetPath()
-        if self.selection == 1:
+        if self.fileFolder.GetSelection() == 1:
             tempPath = self.select.GetPath()
             file = tempPath.split('\\')[-1]
             path = path.rsplit('\\', 1)[0]
+
         bitrate = self.rate.GetValue()
+
+        if self.fileContainer.GetSelection() == 0:
+            container = "ogg"
+        else:
+            container = "opus"
 
         os.chdir(path)
 
         if self.keepFiles.GetValue() == 0:  # if not to keep files
             original = 'NONE'
-        if self.keepFiles.GetValue() == 1:  # if keep files
+        else:  # if keep files
             original = os.path.join(path, 'original')
 
-        if self.selection == 0:  # if folder
-            converter.convert(path, bitrate, original)
-        if self.selection == 1:  # if file
-            converter.convertfile(file, bitrate, original)
+        if self.fileFolder.GetSelection() == 0:  # if folder
+            converter.convert(path, bitrate, original, container)
+        else:  # if file
+            converter.convertfile(file, bitrate, original, container)
 
         print("\nDone converting")
 
