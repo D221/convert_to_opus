@@ -38,7 +38,7 @@ class Panel(wx.Panel):
         # Audio container selection box
         fileContainerChoices = [".ogg", ".opus"]
         self.fileContainer = wx.RadioBox(
-            self, label="Folder or File", choices=fileContainerChoices, pos=(130, 10))
+            self, label="File extension", choices=fileContainerChoices, pos=(130, 10))
         self.fileContainer.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
 
         # Directory selection
