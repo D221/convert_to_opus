@@ -3,10 +3,10 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
-             pathex=['D:\\git projects\\convert_to_opus'],
+a = Analysis(['convert_to_opus\\main.py'],
+             pathex=['.'],
              binaries=[],
-             datas=[],
+             datas=[("convert_to_opus\\converter.py", ".")],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='main',
+          name='convert_to_opus',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

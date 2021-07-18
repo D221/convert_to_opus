@@ -1,5 +1,5 @@
 import wx
-import converter
+from convert_to_opus import converter
 import os
 import sys
 

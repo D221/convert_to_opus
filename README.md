@@ -17,9 +17,7 @@ convert_to_opus is a Python GUI program for converting audio file directories to
 ## Installation
 
 ```bash
-git clone https://github.com/D221/convert_to_opus
-cd convert_to_opus
-pip install .
+pip install convert_to_opus
 ```
 
 ## Requirements
@@ -31,7 +29,7 @@ pip install .
 ## Usage
 
 ```bash
-main.py
+python3 convert_to_opus
 ```
 
 Choose a directory then press CONVERT.
