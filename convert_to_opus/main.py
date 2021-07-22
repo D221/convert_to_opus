@@ -4,13 +4,6 @@ import os
 import sys
 
 
-class windowClass(wx.Frame):
-    def __init__(self, *args, **kw):
-        super(windowClass, self).__init__(*args, **kw)
-        self.Panel = Panel(self)
-        self.Show()
-
-
 class RedirectText(object):  # Redirects console output to wx panel
     def __init__(self, aWxTextCtrl):
         self.out = aWxTextCtrl
@@ -19,59 +12,94 @@ class RedirectText(object):  # Redirects console output to wx panel
         self.out.WriteText(string)
 
 
+class windowClass(wx.Frame):
+    def __init__(self, *args, **kw):
+        super(windowClass, self).__init__(*args, **kw)
+        self.Panel = Panel(self)
+        self.SetMinSize(self.GetSize())
+        self.Show()
+
+
 class Panel(wx.Panel):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        vbox1 = wx.BoxSizer(wx.VERTICAL)
+        vbox2 = wx.BoxSizer(wx.VERTICAL)
 
-        # Console log
-        self.log = wx.TextCtrl(self, -1, pos=(250, 10), size=(300, 200),
-                               style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL)
-        redir = RedirectText(self.log)
-        sys.stdout = redir
-
-        # File or Directory selection box
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         fileFolderChoices = ["Folder", "File"]
         self.fileFolder = wx.RadioBox(
-            self, label="Folder or File", choices=fileFolderChoices, pos=(10, 10))
+            self, label="Folder or File", choices=fileFolderChoices)
         self.fileFolder.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
-
-        # Audio container selection box
+        hbox1.Add(self.fileFolder)
         fileContainerChoices = [".ogg", ".opus"]
         self.fileContainer = wx.RadioBox(
-            self, label="File extension", choices=fileContainerChoices, pos=(130, 10))
-        self.fileContainer.Bind(wx.EVT_RADIOBOX, self.onRadioBox)
+            self, label="File extension", choices=fileContainerChoices)
+        hbox1.Add(self.fileContainer, flag=wx.LEFT, border=10)
+        vbox1.Add(hbox1, flag=wx.LEFT | wx.RIGHT |
+                  wx.TOP | wx.BOTTOM, border=10)
 
-        # Directory selection
-        wx.StaticText(self, pos=(10, 70), label='Select File/Directory')
-        self.select = wx.DirPickerCtrl(self, pos=(10, 90), size=(230, 23))
+        self.hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+        selectText = wx.StaticText(self, label='Select File/Directory')
+        self.hbox2.Add(selectText)
+        self.select = wx.DirPickerCtrl(self)
+        self.hbox2.Add(self.select, flag=wx.LEFT |
+                       wx.EXPAND, border=10, proportion=1)
+        vbox1.Add(self.hbox2, flag=wx.EXPAND | wx.LEFT |
+                  wx.RIGHT | wx.TOP | wx.BOTTOM, border=10)
 
-        # Bitrate selection
-        wx.StaticText(self, pos=(10, 120), label='Select Prefered Bitrate')
-        self.rate = wx.ComboBox(self, pos=(10, 140), size=(150, 23), choices=[
-                                '24', '32', '64', '96', '128', '192', '256', '320'])
+        hbox3 = wx.BoxSizer(wx.HORIZONTAL)
+        rateText = wx.StaticText(self, label='Select Prefered Bitrate')
+        hbox3.Add(rateText)
+        self.rate = wx.ComboBox(
+            self, choices=['24', '32', '64', '96', '128', '192', '256', '320'])
         self.rate.SetValue(text='128')
+        hbox3.Add(self.rate, flag=wx.LEFT | wx.EXPAND, border=10, proportion=1)
+        vbox1.Add(hbox3, flag=wx.LEFT | wx.RIGHT |
+                  wx.EXPAND | wx.BOTTOM, border=10)
 
-        # Keep original files checkbox
-        self.keepFiles = wx.CheckBox(self, pos=(
-            10, 170), label="Keep Original Files")
+        hbox4 = wx.BoxSizer(wx.HORIZONTAL)
+        self.keepFiles = wx.CheckBox(self, label="Keep Original Files")
         self.keepFiles.SetValue(True)
+        hbox4.Add(self.keepFiles)
+        vbox1.Add(hbox4, flag=wx.LEFT | wx.RIGHT |
+                  wx.EXPAND | wx.BOTTOM, border=10)
 
-        # Convert button
-        Button = wx.Button(self, pos=(10, 200),
-                           size=(150, 50), label='CONVERT')
+        hbox6 = wx.BoxSizer(wx.HORIZONTAL)
+        Button = wx.Button(self, size=(70, 30), label='CONVERT')
         Button.Bind(wx.EVT_BUTTON, self.threading)
+        hbox6.Add(Button)
+        vbox1.Add(hbox6, flag=wx.LEFT | wx.RIGHT |
+                  wx.EXPAND | wx.BOTTOM, border=10)
+
+        hbox5 = wx.BoxSizer(wx.HORIZONTAL)
+        log = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE |
+                          wx.TE_READONLY | wx.HSCROLL)
+        redir = RedirectText(log)
+        sys.stdout = redir
+        hbox5.Add(log, proportion=1, flag=wx.EXPAND)
+        vbox2.Add(hbox5, flag=wx.LEFT | wx.RIGHT |
+                  wx.EXPAND, border=10, proportion=1)
+
+        hbox.Add(vbox1, proportion=1, flag=wx.EXPAND)
+        hbox.Add(vbox2, proportion=1, flag=wx.EXPAND |
+                 wx.LEFT | wx.TOP | wx.BOTTOM, border=10)
+
+        self.SetSizer(hbox)
 
     def onRadioBox(self, event):
         self.select.Destroy()
         if self.fileFolder.GetSelection() == 0:
-            self.select = wx.DirPickerCtrl(self, pos=(10, 90), size=(230, 23))
+            self.select = wx.DirPickerCtrl(self)
+            self.hbox2.Add(self.select, flag=wx.LEFT |
+                           wx.EXPAND, border=10, proportion=1)
+            self.Layout()
         else:
-            self.select = wx.FilePickerCtrl(self, pos=(10, 90), size=(230, 23))
-
-    def threading(self, event):
-        import threading
-        th = threading.Thread(target=self.onButton, args=(event,))
-        th.start()
+            self.select = wx.FilePickerCtrl(self)
+            self.hbox2.Add(self.select, flag=wx.LEFT |
+                           wx.EXPAND, border=10, proportion=1)
+            self.Layout()
 
     def onButton(self, event):
         path = self.select.GetPath()
@@ -101,11 +129,15 @@ class Panel(wx.Panel):
 
         print("\nDone converting")
 
+    def threading(self, event):
+        import threading
+        th = threading.Thread(target=self.onButton, args=(event,))
+        th.start()
+
 
 def main():
     app = wx.App()
-    windowClass(None, title='convert_to_opus', size=(600, 300),
-                style=wx.MINIMIZE_BOX | wx.CAPTION | wx.CLOSE_BOX)
+    windowClass(None, title='convert_to_opus', size=(800, 300))
     app.MainLoop()
 
 
