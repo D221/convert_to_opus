@@ -29,7 +29,7 @@ pip install convert_to_opus
 ## Usage
 
 ```bash
-python3 convert_to_opus
+convert_to_opus
 ```
 
 Choose a directory then press CONVERT.
