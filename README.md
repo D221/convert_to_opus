@@ -1,5 +1,7 @@
 # convert_to_opus
 
+## Also check out CLI of this [convert-to-opus-cli](https://github.com/D221/convert-to-opus-cli)
+
 convert_to_opus is a Python GUI program for converting audio file directories to [opus](https://opus-codec.org/) audio format.
 
 ## Features
